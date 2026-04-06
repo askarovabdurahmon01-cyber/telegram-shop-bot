@@ -15,174 +15,84 @@ SHOP_NAME = "UzbTopDonat"
 SUPPORT_USERNAME = "@GGDONAT1"
 
 # =========================
-# ОПЛАТА
-# =========================
-PAYMENT_TEXT = """
-💳 Оплата:
-
-💳 Click / Payme / Карта:
-5614 6805 0423 5934
-
-👤 Получатель:
-ARTIKOVA ZUXRA
-
-📱 Номер телефона:
-93 597 27 47
-
-🏧 Можно оплатить через банкомат
-❌ На номер НЕ кидать
-🛑 За ошибочный перевод не ручаемся
-
-📌 После оплаты нажмите "✅ Я оплатил"
-и отправьте чек (скриншот).
-"""
-
-# =========================
 # ТОВАРЫ
 # =========================
 PRODUCTS = {
-    "⭐ Telegram Stars": {
-        "Telegram Stars 100⭐": 30000,
-        "Telegram Stars 150⭐": 45000,
-        "Telegram Stars 250⭐": 70000,
-        "Telegram Stars 350⭐": 95000,
-        "Telegram Stars 500⭐": 140000,
-        "Telegram Stars 750⭐": 199000,
-        "Telegram Stars 1000⭐": 285000,
-    },
+    "Telegram Stars 100⭐": 30000,
+    "Telegram Stars 150⭐": 45000,
+    "Telegram Stars 250⭐": 70000,
+    "Telegram Stars 350⭐": 95000,
+    "Telegram Stars 500⭐": 140000,
+    "Telegram Stars 750⭐": 199000,
+    "Telegram Stars 1000⭐": 285000,
 
-    "💎 Telegram Premium": {
-        "Telegram Premium 1 месяц": 60000,
-        "Telegram Premium 1 год": 480000,
-    },
+    "Telegram Premium 1 месяц": 60000,
+    "Telegram Premium 1 год": 480000,
 
-    "💎 Гемы Brawl Stars": {
-        "Brawl Stars 30 гемов": 16000,
-        "Brawl Stars 80 гемов": 40000,
-        "Brawl Stars 170 гемов": 74000,
-        "Brawl Stars 360 гемов": 145000,
-        "Brawl Stars 950 гемов": 355000,
-        "Brawl Stars 2000 гемов": 685000,
-    },
+    "Brawl Stars 30 гемов": 16000,
+    "Brawl Stars 80 гемов": 40000,
+    "Brawl Stars 170 гемов": 74000,
+    "Brawl Stars 360 гемов": 145000,
+    "Brawl Stars 950 гемов": 355000,
+    "Brawl Stars 2000 гемов": 685000,
 
-    "🔥 Brawl Pass": {
-        "Brawl Pass": 70000,
-        "Brawl Pass Plus": 110000,
-    },
+    "Brawl Pass": 70000,
+    "Brawl Pass Plus": 110000,
 
-    "⚽ FC Points": {
-        "FC Points 40+40": 13000,
-        "FC Points 100+100": 25000,
-        "FC Points 500+500": 96000,
-        "FC Points 1000+1000": 195000,
-        "FC Points 2000+2000": 380000,
-    },
+    "FC Points 40+40": 13000,
+    "FC Points 100+100": 25000,
+    "FC Points 500+500": 96000,
+    "FC Points 1000+1000": 195000,
+    "FC Points 2000+2000": 380000,
 
-    "🌟 Звёздный абонемент": {
-        "Звёздный абонемент": 195000,
-        "Звёздный абонемент +20 уровней": 370000,
-    }
+    "Звёздный абонемент": 195000,
+    "Звёздный абонемент +20 уровней": 370000,
 }
 
 # =========================
-# АКЦИИ / ПРАЙС / ТЕКСТЫ
+# КАТЕГОРИИ
 # =========================
-ACTIONS_TEXT = """
-🎁 АКЦИИ И ПРЕДЛОЖЕНИЯ
-
-⭐ TELEGRAM STARS — ВЫГОДНО И БЫСТРО ⭐
-
-🚀 Пополняй звёзды без лишних переплат
-🔒 Надёжно | Проверено
-
-💰 Цены:
-• 100 ⭐ — 30 000 сум
-• 150 ⭐ — 45 000 сум
-• 250 ⭐ — 70 000 сум
-• 350 ⭐ — 95 000 сум
-• 500 ⭐ — 140 000 сум
-• 750 ⭐ — 199 000 сум
-• 1000 ⭐ — 285 000 сум
-
-🔥 Успей купить по текущим ценам
-
-📩 Заказ: @GGDONAT1
-"""
-
-PRICE_TEXT = """
-💰 ПРАЙС
-
-⭐ TELEGRAM STARS
-• 100 ⭐ — 30 000 сум
-• 150 ⭐ — 45 000 сум
-• 250 ⭐ — 70 000 сум
-• 350 ⭐ — 95 000 сум
-• 500 ⭐ — 140 000 сум
-• 750 ⭐ — 199 000 сум
-• 1000 ⭐ — 285 000 сум
-
-💎 TELEGRAM PREMIUM
-• 1 месяц — 60 000 сум
-• 1 год — 480 000 сум
-
-💎 ГЕМЫ BRAWL STARS
-• 30 гемов — 16 000 сум
-• 80 гемов — 40 000 сум
-• 170 гемов — 74 000 сум
-• 360 гемов — 145 000 сум
-• 950 гемов — 355 000 сум
-• 2000 гемов — 685 000 сум
-
-🔥 BRAWL PASS
-• Brawl Pass — 70 000 сум
-• Brawl Pass Plus — 110 000 сум
-
-⚽ FC POINTS
-• 40+40 — 13 000 сум
-• 100+100 — 25 000 сум
-• 500+500 — 96 000 сум
-• 1000+1000 — 195 000 сум
-• 2000+2000 — 380 000 сум
-
-🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ
-• Абонемент — 195 000 сум
-• +20 уровней — 370 000 сум
-"""
-
-WHAT_WE_HAVE_TEXT = """
-📋 ЧТО ЕСТЬ У НАС
-
-⭐ Telegram Stars
-💎 Telegram Premium
-💎 Гемы Brawl Stars
-🔥 Brawl Pass
-⚽ FC Points
-🌟 Звёздный абонемент
-
-📩 Заказ и поддержка:
-@GGDONAT1
-"""
-
-REVIEWS_TEXT = """
-⭐ ОТЗЫВЫ
-
-Отзывы можешь добавить вручную позже.
-Пока можно написать сюда:
-
-"Отзывы скоро будут 🔥"
-
-Или просто отправлять клиентов в канал / чат с отзывами.
-"""
-
-SUPPORT_TEXT = f"""
-🛠 Поддержка
-
-Если есть вопросы или проблемы с заказом:
-📩 Пиши: {SUPPORT_USERNAME}
-"""
+CATEGORIES = {
+    "⭐ Telegram Stars": [
+        "Telegram Stars 100⭐",
+        "Telegram Stars 150⭐",
+        "Telegram Stars 250⭐",
+        "Telegram Stars 350⭐",
+        "Telegram Stars 500⭐",
+        "Telegram Stars 750⭐",
+        "Telegram Stars 1000⭐",
+    ],
+    "⭐ Telegram Premium": [
+        "Telegram Premium 1 месяц",
+        "Telegram Premium 1 год",
+    ],
+    "💎 Гемы Brawl Stars": [
+        "Brawl Stars 30 гемов",
+        "Brawl Stars 80 гемов",
+        "Brawl Stars 170 гемов",
+        "Brawl Stars 360 гемов",
+        "Brawl Stars 950 гемов",
+        "Brawl Stars 2000 гемов",
+    ],
+    "🔥 Brawl Pass": [
+        "Brawl Pass",
+        "Brawl Pass Plus",
+    ],
+    "⚽ FC Points": [
+        "FC Points 40+40",
+        "FC Points 100+100",
+        "FC Points 500+500",
+        "FC Points 1000+1000",
+        "FC Points 2000+2000",
+    ],
+    "🌟 Звёздный абонемент": [
+        "Звёздный абонемент",
+        "Звёздный абонемент +20 уровней",
+    ],
+}
 
 # =========================
-# КЛАВИАТУРЫ
+# КНОПКИ
 # =========================
 def main_menu():
     return ReplyKeyboardMarkup(
@@ -196,285 +106,313 @@ def main_menu():
     )
 
 def categories_menu():
-    buttons = [[KeyboardButton(cat)] for cat in PRODUCTS.keys()]
-    buttons.append([KeyboardButton("⬅️ Назад")])
-    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-
-def products_menu(category):
-    buttons = [[KeyboardButton(name)] for name in PRODUCTS[category].keys()]
-    buttons.append([KeyboardButton("⬅️ Назад")])
-    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-
-def after_payment_menu():
     return ReplyKeyboardMarkup(
         [
-            [KeyboardButton("✅ Я оплатил")],
-            [KeyboardButton("⬅️ Назад в меню")]
+            [KeyboardButton("⭐ Telegram Stars"), KeyboardButton("⭐ Telegram Premium")],
+            [KeyboardButton("💎 Гемы Brawl Stars"), KeyboardButton("🔥 Brawl Pass")],
+            [KeyboardButton("⚽ FC Points"), KeyboardButton("🌟 Звёздный абонемент")],
+            [KeyboardButton("🔙 Назад")],
+        ],
+        resize_keyboard=True
+    )
+
+def payment_menu():
+    return ReplyKeyboardMarkup(
+        [
+            [KeyboardButton("☑️ Я оплатил")],
+            [KeyboardButton("🔙 Назад")],
         ],
         resize_keyboard=True
     )
 
 # =========================
-# КОМАНДЫ
+# /start
 # =========================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data.clear()
-    text = f"""
-👋 Добро пожаловать в {SHOP_NAME}
+    user = update.effective_user.first_name if update.effective_user else "друг"
 
-Здесь можно купить:
-⭐ Stars
-💎 Premium
-🎮 Игровые товары
+    text = f"""
+👋 Привет, {user}!
+
+Добро пожаловать в <b>{SHOP_NAME}</b> 🚀
+
+Здесь ты можешь быстро купить:
+⭐ Telegram Stars
+⭐ Telegram Premium
+💎 Гемы Brawl Stars
+🔥 Brawl Pass
 ⚽ FC Points
+🌟 Звёздный абонемент
 
 Выбери нужный раздел ниже 👇
 """
-    await update.message.reply_text(text, reply_markup=main_menu())
+
+    await update.message.reply_text(
+        text,
+        parse_mode="HTML",
+        reply_markup=main_menu()
+    )
 
 # =========================
-# ОБРАБОТКА ТЕКСТА
+# ТЕКСТ
 # =========================
-async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    text = update.message.text.strip() if update.message.text else ""
 
     # Главное меню
     if text == "🛒 Купить":
         await update.message.reply_text(
-            "📂 Выберите категорию:",
+            "🛍 Выбери категорию:",
             reply_markup=categories_menu()
         )
-        return
 
     elif text == "💰 Прайс":
-        await update.message.reply_text(PRICE_TEXT, reply_markup=main_menu())
-        return
+        msg = "💰 <b>Наш прайс:</b>\n\n"
+        for category, items in CATEGORIES.items():
+            msg += f"<b>{category}</b>\n"
+            for item in items:
+                price = PRODUCTS.get(item, 0)
+                msg += f"• {item} — <b>{price:,} сум</b>\n"
+            msg += "\n"
+
+        await update.message.reply_text(msg, parse_mode="HTML")
 
     elif text == "🎁 Акции":
-        await update.message.reply_text(ACTIONS_TEXT, reply_markup=main_menu())
-        return
+        await update.message.reply_text(
+            "🔥 <b>Сейчас действуют выгодные цены!</b>\n\n"
+            "Успей купить по текущим ценам 🚀",
+            parse_mode="HTML"
+        )
 
     elif text == "📦 Мои заказы":
         await update.message.reply_text(
-            "📦 Ваши заказы пока не сохраняются в списке.\n\nНо после оплаты чек и заказ сразу приходят админу.",
-            reply_markup=main_menu()
+            "📦 История заказов пока не подключена.\n"
+            "Но твои оплаты и чеки будут приходить админу."
         )
-        return
 
     elif text == "⭐ Отзывы":
-        await update.message.reply_text(REVIEWS_TEXT, reply_markup=main_menu())
-        return
+        await update.message.reply_text(
+            "⭐ Раздел отзывов пока в разработке."
+        )
 
     elif text == "🛠 Поддержка":
-        await update.message.reply_text(SUPPORT_TEXT, reply_markup=main_menu())
-        return
+        await update.message.reply_text(
+            f"🛠 Поддержка: {SUPPORT_USERNAME}"
+        )
 
     elif text == "📋 Что есть у нас":
-        await update.message.reply_text(WHAT_WE_HAVE_TEXT, reply_markup=main_menu())
-        return
+        msg = "📋 <b>Что есть у нас:</b>\n\n"
+        for category in CATEGORIES.keys():
+            msg += f"• {category}\n"
+        await update.message.reply_text(msg, parse_mode="HTML")
 
-    elif text == "⬅️ Назад":
-        await update.message.reply_text("🏠 Главное меню", reply_markup=main_menu())
-        return
+    elif text == "🔙 Назад":
+        await start(update, context)
 
-    elif text == "⬅️ Назад в меню":
-        await update.message.reply_text("🏠 Главное меню", reply_markup=main_menu())
-        return
-
-    # Выбор категории
-    if text in PRODUCTS:
-        context.user_data["selected_category"] = text
+    # Категории
+    elif text in CATEGORIES:
+        items = "\n".join([f"• {item}" for item in CATEGORIES[text]])
         await update.message.reply_text(
-            f"📦 Категория: {text}\n\nВыберите товар:",
-            reply_markup=products_menu(text)
+            f"📦 <b>{text}</b>\n\n"
+            f"Выбери товар и напиши его <b>ТОЧНО</b> как в списке:\n\n{items}",
+            parse_mode="HTML"
         )
-        return
 
     # Выбор товара
-    for category, items in PRODUCTS.items():
-        if text in items:
-            price = items[text]
-            context.user_data["selected_product"] = text
-            context.user_data["selected_price"] = price
+    elif text in PRODUCTS:
+        price = PRODUCTS[text]
 
-            msg = f"""
-🛒 Ваш товар:
+        context.user_data["selected_product"] = text
+        context.user_data["selected_price"] = price
+        context.user_data["waiting_payment_proof"] = False
+
+        pay_text = f"""
+🛍 <b>Ваш заказ:</b>
 {text}
 
-💰 Цена:
-{price:,} сум
+💰 <b>Сумма:</b> {price:,} сум
 
-{PAYMENT_TEXT}
+💳 <b>Оплата:</b>
+
+<b>Номер карты 💳 Click / Payme</b>
+<code>5614680504235934</code>
+
+<b>Получатель:</b>
+ARTIKOVA ZUXRA
+
+<b>Номер телефона 📱</b>
+93 597 27 47
+
+🏧 Можно в банкомате
+❌ На номер не кидать
+
+⚠️ <b>За ошибочный перевод не ручаюсь</b>
+
+📌 <b>После оплаты:</b>
+1) Оплати нужную сумму
+2) Сделай скрин / фото чека
+3) Нажми <b>☑️ Я оплатил</b>
+4) Отправь чек сюда
 """
-            await update.message.reply_text(msg, reply_markup=after_payment_menu())
-            return
 
-    # Кнопка "Я оплатил"
-    elif text == "✅ Я оплатил":
-        product = context.user_data.get("selected_product")
-        price = context.user_data.get("selected_price")
+        await update.message.reply_text(
+            pay_text,
+            parse_mode="HTML",
+            reply_markup=payment_menu()
+        )
 
-        if not product:
+    elif text == "☑️ Я оплатил":
+        selected_product = context.user_data.get("selected_product")
+        selected_price = context.user_data.get("selected_price")
+
+        if not selected_product:
             await update.message.reply_text(
-                "❌ Сначала выберите товар.",
-                reply_markup=main_menu()
+                "❌ Сначала выбери товар через кнопку «🛒 Купить»."
             )
             return
 
-        context.user_data["waiting_for_receipt"] = True
+        context.user_data["waiting_payment_proof"] = True
 
         await update.message.reply_text(
-            f"""
-📌 Вы выбрали:
-🛒 {product}
-💰 {price:,} сум
-
-Теперь отправьте сюда:
-📸 СКРИНШОТ ЧЕКА
-
-После этого заказ автоматически уйдёт админу.
-""",
-            reply_markup=after_payment_menu()
+            f"📸 Отлично!\n\n"
+            f"Теперь отправь сюда <b>СКРИНШОТ или ФОТО оплаты</b>.\n\n"
+            f"🛍 Товар: <b>{selected_product}</b>\n"
+            f"💰 Сумма: <b>{selected_price:,} сум</b>\n\n"
+            f"После этого бот автоматически отправит чек админу.",
+            parse_mode="HTML"
         )
-        return
 
-    # Если не понял
-    await update.message.reply_text(
-        "❌ Я не понял команду. Используйте кнопки ниже 👇",
-        reply_markup=main_menu()
-    )
+    else:
+        await update.message.reply_text(
+            "❌ Такого товара нет в этой категории.\n"
+            "Напиши точно как в списке."
+        )
 
 # =========================
-# ОБРАБОТКА ФОТО (ЧЕК)
+# ФОТО ЧЕКА
 # =========================
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.user_data.get("waiting_for_receipt"):
+    if not context.user_data.get("waiting_payment_proof"):
         await update.message.reply_text(
-            "📸 Если это чек, сначала нажмите кнопку «✅ Я оплатил».",
-            reply_markup=main_menu()
+            "📸 Сначала выбери товар и нажми «☑️ Я оплатил»."
         )
         return
 
     user = update.effective_user
-    product = context.user_data.get("selected_product", "Не указано")
-    price = context.user_data.get("selected_price", 0)
+    selected_product = context.user_data.get("selected_product", "Не выбран")
+    selected_price = context.user_data.get("selected_price", 0)
 
-    caption_to_admin = f"""
-🚨 НОВЫЙ ЗАКАЗ
+    username = f"@{user.username}" if user.username else "нет username"
 
-👤 Имя: {user.first_name or "Без имени"}
-🆔 ID: {user.id}
-📛 Username: @{user.username if user.username else "нет"}
+    caption = f"""
+💸 <b>НОВАЯ ОПЛАТА</b>
 
-🛒 Товар: {product}
-💰 Сумма: {price:,} сум
+👤 <b>Клиент:</b> {user.full_name}
+📩 <b>Username:</b> {username}
+🆔 <b>ID:</b> <code>{user.id}</code>
 
-📸 Ниже чек от клиента.
+🛍 <b>Товар:</b> {selected_product}
+💰 <b>Сумма:</b> {selected_price:,} сум
+
+📌 Проверь оплату и свяжись с клиентом.
 """
 
-    # Пересылаем фото админу
-    try:
-        photo = update.message.photo[-1].file_id
-        await context.bot.send_photo(
-            chat_id=ADMIN_ID,
-            photo=photo,
-            caption=caption_to_admin
-        )
-    except Exception as e:
-        print("Ошибка отправки админу:", e)
+    photo = update.message.photo[-1].file_id
 
-    # Сообщение клиенту
+    await context.bot.send_photo(
+        chat_id=ADMIN_ID,
+        photo=photo,
+        caption=caption,
+        parse_mode="HTML"
+    )
+
     await update.message.reply_text(
-        f"""
-✅ Чек получен!
-
-Ваш заказ отправлен админу.
-
-🛒 Товар: {product}
-💰 Сумма: {price:,} сум
-
-📩 Ожидайте подтверждения.
-Если нужно ускорить — напишите {SUPPORT_USERNAME}
-""",
+        "✅ <b>Чек отправлен админу!</b>\n\n"
+        "⏳ Ожидай подтверждения и выдачи товара.",
+        parse_mode="HTML",
         reply_markup=main_menu()
     )
 
-    # Сброс
-    context.user_data["waiting_for_receipt"] = False
-    context.user_data["selected_product"] = None
-    context.user_data["selected_price"] = None
+    context.user_data["waiting_payment_proof"] = False
 
 # =========================
-# ОБРАБОТКА ДОКУМЕНТОВ (если чек как файл)
+# ДОКУМЕНТ (если чек отправят файлом)
 # =========================
 async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.user_data.get("waiting_for_receipt"):
+    if not context.user_data.get("waiting_payment_proof"):
         await update.message.reply_text(
-            "📎 Если это чек, сначала нажмите кнопку «✅ Я оплатил».",
-            reply_markup=main_menu()
+            "📄 Сначала выбери товар и нажми «☑️ Я оплатил»."
         )
         return
 
     user = update.effective_user
-    product = context.user_data.get("selected_product", "Не указано")
-    price = context.user_data.get("selected_price", 0)
+    selected_product = context.user_data.get("selected_product", "Не выбран")
+    selected_price = context.user_data.get("selected_price", 0)
 
-    caption_to_admin = f"""
-🚨 НОВЫЙ ЗАКАЗ
+    username = f"@{user.username}" if user.username else "нет username"
 
-👤 Имя: {user.first_name or "Без имени"}
-🆔 ID: {user.id}
-📛 Username: @{user.username if user.username else "нет"}
+    caption = f"""
+💸 <b>НОВАЯ ОПЛАТА (ФАЙЛ)</b>
 
-🛒 Товар: {product}
-💰 Сумма: {price:,} сум
+👤 <b>Клиент:</b> {user.full_name}
+📩 <b>Username:</b> {username}
+🆔 <b>ID:</b> <code>{user.id}</code>
 
-📎 Клиент отправил чек файлом.
+🛍 <b>Товар:</b> {selected_product}
+💰 <b>Сумма:</b> {selected_price:,} сум
+
+📌 Проверь оплату и свяжись с клиентом.
 """
 
-    try:
-        document = update.message.document.file_id
-        await context.bot.send_document(
-            chat_id=ADMIN_ID,
-            document=document,
-            caption=caption_to_admin
-        )
-    except Exception as e:
-        print("Ошибка отправки файла админу:", e)
+    document = update.message.document.file_id
+
+    await context.bot.send_document(
+        chat_id=ADMIN_ID,
+        document=document,
+        caption=caption,
+        parse_mode="HTML"
+    )
 
     await update.message.reply_text(
-        f"""
-✅ Чек получен!
-
-Ваш заказ отправлен админу.
-
-🛒 Товар: {product}
-💰 Сумма: {price:,} сум
-
-📩 Ожидайте подтверждения.
-Если нужно ускорить — напишите {SUPPORT_USERNAME}
-""",
+        "✅ <b>Чек отправлен админу!</b>\n\n"
+        "⏳ Ожидай подтверждения и выдачи товара.",
+        parse_mode="HTML",
         reply_markup=main_menu()
     )
 
-    context.user_data["waiting_for_receipt"] = False
-    context.user_data["selected_product"] = None
-    context.user_data["selected_price"] = None
+    context.user_data["waiting_payment_proof"] = False
+
+# =========================
+# ОШИБКИ
+# =========================
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
+    print(f"Ошибка: {context.error}")
 
 # =========================
 # ЗАПУСК
 # =========================
 def main():
-    print("Бот запущен...")
+    if not BOT_TOKEN:
+        print("❌ BOT_TOKEN не найден")
+        return
+
+    if not ADMIN_ID:
+        print("❌ ADMIN_ID не найден")
+        return
+
+    print("✅ Бот запущен...")
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.Document.ALL, handle_document))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    app.run_polling()
+    app.add_error_handler(error_handler)
+
+    app.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__":
     main()
