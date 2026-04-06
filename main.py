@@ -314,22 +314,31 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 🛍 <b>Товар:</b> {selected_product}
 💰 <b>Сумма:</b> {selected_price:,} сум
+# Кнопка "Я оплатил"
+    elif text == "✅ Я оплатил":
+        product = context.user_data.get("selected_product")
+        price = context.user_data.get("selected_price")
 
-📌 Проверь оплату и свяжись с клиентом.
-"""
+        if not product:
+            await update.message.reply_text(
+                "❌ Сначала выберите товар.",
+                reply_markup=main_menu()
+            )
+            return
 
-    photo = update.message.photo[-1].file_id
+        context.user_data["waiting_payment_proof"] = True
 
-    await context.bot.send_photo(
-        chat_id=ADMIN_ID,
-        photo=photo,
-        caption=caption,
-        parse_mode="HTML"
-    )
+        await update.message.reply_text(
+            f"""📌 Вы выбрали:
+{product}
 
-    await update.message.reply_text(
-        "✅ <b>Чек отправлен админу!</b>\n\n"
-        "⏳ Ожидай подтверждения и выдачи товара.",
+💰 Сумма: {price:,} сум
+
+💳 Оплатите по реквизитам выше и отправьте сюда СКРИНШОТ оплаты.
+
+⚠️ После отправки скрина админ проверит и свяжется с вами."""
+        )
+        return
         parse_mode="HTML",
         reply_markup=main_menu()
     )
