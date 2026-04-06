@@ -80,7 +80,6 @@ PRODUCTS = {
     "На год (каждый месяц по 40 000 сум)": "480 000 сум"
     }
     },
-}
 
 CATEGORY_INFO = {
     "⭐ TELEGRAM STARS": """⭐ TELEGRAM STARS — ВЫГОДНО И БЫСТРО ⭐
