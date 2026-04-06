@@ -1,19 +1,45 @@
 import os
-import json
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    filters,
+)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID"))
+ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
 
-SHOP_NAME = "GG DONAT SHOP"
+SHOP_NAME = "UzbTopDonat"
 SUPPORT_USERNAME = "@GGDONAT1"
 
-ORDERS_FILE = "orders.json"
+# =========================
+# ОПЛАТА
+# =========================
+PAYMENT_TEXT = """
+💳 Оплата:
 
-# -------------------------
+💳 Click / Payme / Карта:
+5614 6805 0423 5934
+
+👤 Получатель:
+ARTIKOVA ZUXRA
+
+📱 Номер телефона:
+93 597 27 47
+
+🏧 Можно оплатить через банкомат
+❌ На номер НЕ кидать
+🛑 За ошибочный перевод не ручаемся
+
+📌 После оплаты нажмите "✅ Я оплатил"
+и отправьте чек (скриншот).
+"""
+
+# =========================
 # ТОВАРЫ
-# -------------------------
+# =========================
 PRODUCTS = {
     "⭐ Telegram Stars": {
         "Telegram Stars 100⭐": 30000,
@@ -30,7 +56,7 @@ PRODUCTS = {
         "Telegram Premium 1 год": 480000,
     },
 
-    "🎮 Гемы Brawl Stars": {
+    "💎 Гемы Brawl Stars": {
         "Brawl Stars 30 гемов": 16000,
         "Brawl Stars 80 гемов": 40000,
         "Brawl Stars 170 гемов": 74000,
@@ -58,60 +84,33 @@ PRODUCTS = {
     }
 }
 
-# -------------------------
-# СОСТОЯНИЯ
-# -------------------------
-user_state = {}  # user_id -> category
-user_orders = {}  # user_id -> [orders]
+# =========================
+# АКЦИИ / ПРАЙС / ТЕКСТЫ
+# =========================
+ACTIONS_TEXT = """
+🎁 АКЦИИ И ПРЕДЛОЖЕНИЯ
 
+⭐ TELEGRAM STARS — ВЫГОДНО И БЫСТРО ⭐
 
-# -------------------------
-# ФАЙЛ ЗАКАЗОВ
-# -------------------------
-def load_orders():
-    global user_orders
-    if os.path.exists(ORDERS_FILE):
-        try:
-            with open(ORDERS_FILE, "r", encoding="utf-8") as f:
-                user_orders = json.load(f)
-        except:
-            user_orders = {}
-    else:
-        user_orders = {}
+🚀 Пополняй звёзды без лишних переплат
+🔒 Надёжно | Проверено
 
-def save_orders():
-    with open(ORDERS_FILE, "w", encoding="utf-8") as f:
-        json.dump(user_orders, f, ensure_ascii=False, indent=2)
+💰 Цены:
+• 100 ⭐ — 30 000 сум
+• 150 ⭐ — 45 000 сум
+• 250 ⭐ — 70 000 сум
+• 350 ⭐ — 95 000 сум
+• 500 ⭐ — 140 000 сум
+• 750 ⭐ — 199 000 сум
+• 1000 ⭐ — 285 000 сум
 
+🔥 Успей купить по текущим ценам
 
-# -------------------------
-# КЛАВИАТУРЫ
-# -------------------------
-def main_menu():
-    keyboard = [
-        [KeyboardButton("🛒 Купить"), KeyboardButton("💰 Прайс")],
-        [KeyboardButton("🎁 Акции"), KeyboardButton("📦 Мои заказы")],
-        [KeyboardButton("⭐ Отзывы"), KeyboardButton("🛠 Поддержка")],
-        [KeyboardButton("📋 Что есть у нас")]
-    ]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+📩 Заказ: @GGDONAT1
+"""
 
-def categories_menu():
-    keyboard = [[KeyboardButton(cat)] for cat in PRODUCTS.keys()]
-    keyboard.append([KeyboardButton("⬅️ Назад")])
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-def products_menu(category):
-    keyboard = [[KeyboardButton(name)] for name in PRODUCTS[category].keys()]
-    keyboard.append([KeyboardButton("⬅️ Назад")])
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-
-# -------------------------
-# ТЕКСТЫ
-# -------------------------
-def get_price_text():
-    return """💰 ПРАЙС ЛИСТ 💰
+PRICE_TEXT = """
+💰 ПРАЙС
 
 ⭐ TELEGRAM STARS
 • 100 ⭐ — 30 000 сум
@@ -126,7 +125,7 @@ def get_price_text():
 • 1 месяц — 60 000 сум
 • 1 год — 480 000 сум
 
-🎮 ГЕМЫ BRAWL STARS
+💎 ГЕМЫ BRAWL STARS
 • 30 гемов — 16 000 сум
 • 80 гемов — 40 000 сум
 • 170 гемов — 74 000 сум
@@ -139,226 +138,343 @@ def get_price_text():
 • Brawl Pass Plus — 110 000 сум
 
 ⚽ FC POINTS
-• 40 + 40 — 13 000 сум
-• 100 + 100 — 25 000 сум
-• 500 + 500 — 96 000 сум
-• 1000 + 1000 — 195 000 сум
-• 2000 + 2000 — 380 000 сум
+• 40+40 — 13 000 сум
+• 100+100 — 25 000 сум
+• 500+500 — 96 000 сум
+• 1000+1000 — 195 000 сум
+• 2000+2000 — 380 000 сум
 
 🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ
 • Абонемент — 195 000 сум
 • +20 уровней — 370 000 сум
 """
 
-def get_promo_text():
-    return """🎁 АКЦИИ 🎁
+WHAT_WE_HAVE_TEXT = """
+📋 ЧТО ЕСТЬ У НАС
 
-🔥 Успей купить по текущим ценам
-🔥 Некоторые товары идут по скидке
-🔥 FC Points сейчас с двойным бонусом
+⭐ Telegram Stars
+💎 Telegram Premium
+💎 Гемы Brawl Stars
+🔥 Brawl Pass
+⚽ FC Points
+🌟 Звёздный абонемент
 
-📩 Заказ: @GGDONAT1
+📩 Заказ и поддержка:
+@GGDONAT1
 """
 
-def get_reviews_text():
-    return """⭐ ОТЗЫВЫ ⭐
+REVIEWS_TEXT = """
+⭐ ОТЗЫВЫ
 
-Отзывы клиентов можно посмотреть у администратора 👇
-📩 @GGDONAT1
+Отзывы можешь добавить вручную позже.
+Пока можно написать сюда:
+
+"Отзывы скоро будут 🔥"
+
+Или просто отправлять клиентов в канал / чат с отзывами.
 """
 
-def get_support_text():
-    return f"""🛠 ПОДДЕРЖКА
+SUPPORT_TEXT = f"""
+🛠 Поддержка
 
-Если есть вопросы или проблемы:
-📩 Пиши сюда: {SUPPORT_USERNAME}
+Если есть вопросы или проблемы с заказом:
+📩 Пиши: {SUPPORT_USERNAME}
 """
 
-def get_catalog_text():
-    text = "📋 ЧТО ЕСТЬ У НАС:\n\n"
-    for category, items in PRODUCTS.items():
-        text += f"{category}\n"
-        for item, price in items.items():
-            text += f"• {item} — {price:,} сум\n".replace(",", " ")
-        text += "\n"
-    return text
+# =========================
+# КЛАВИАТУРЫ
+# =========================
+def main_menu():
+    return ReplyKeyboardMarkup(
+        [
+            [KeyboardButton("🛒 Купить"), KeyboardButton("💰 Прайс")],
+            [KeyboardButton("🎁 Акции"), KeyboardButton("📦 Мои заказы")],
+            [KeyboardButton("⭐ Отзывы"), KeyboardButton("🛠 Поддержка")],
+            [KeyboardButton("📋 Что есть у нас")],
+        ],
+        resize_keyboard=True
+    )
 
+def categories_menu():
+    buttons = [[KeyboardButton(cat)] for cat in PRODUCTS.keys()]
+    buttons.append([KeyboardButton("⬅️ Назад")])
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 
-# -------------------------
+def products_menu(category):
+    buttons = [[KeyboardButton(name)] for name in PRODUCTS[category].keys()]
+    buttons.append([KeyboardButton("⬅️ Назад")])
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+
+def after_payment_menu():
+    return ReplyKeyboardMarkup(
+        [
+            [KeyboardButton("✅ Я оплатил")],
+            [KeyboardButton("⬅️ Назад в меню")]
+        ],
+        resize_keyboard=True
+    )
+
+# =========================
 # КОМАНДЫ
-# -------------------------
+# =========================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    await update.message.reply_text(
-        f"👋 Добро пожаловать в {SHOP_NAME}!\n\n"
-        f"Выбери нужный раздел ниже 👇",
-        reply_markup=main_menu()
-    )
+    context.user_data.clear()
+    text = f"""
+👋 Добро пожаловать в {SHOP_NAME}
 
-async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("📍 Главное меню", reply_markup=main_menu())
+Здесь можно купить:
+⭐ Stars
+💎 Premium
+🎮 Игровые товары
+⚽ FC Points
 
-async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(get_price_text(), reply_markup=main_menu())
-
-async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🛒 Выбери категорию товара:",
-        reply_markup=categories_menu()
-    )
-
-async def promo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(get_promo_text(), reply_markup=main_menu())
-
-async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(get_support_text(), reply_markup=main_menu())
-
-async def reviews(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(get_reviews_text(), reply_markup=main_menu())
-
-async def myorders(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = str(update.effective_user.id)
-    orders = user_orders.get(user_id, [])
-
-    if not orders:
-        await update.message.reply_text("📦 У тебя пока нет заказов.", reply_markup=main_menu())
-        return
-
-    text = "📦 ТВОИ ЗАКАЗЫ:\n\n"
-    for i, order in enumerate(orders, 1):
-        text += f"{i}. {order}\n"
-
+Выбери нужный раздел ниже 👇
+"""
     await update.message.reply_text(text, reply_markup=main_menu())
 
-
-# -------------------------
+# =========================
 # ОБРАБОТКА ТЕКСТА
-# -------------------------
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+# =========================
+async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
-    user = update.effective_user
-    user_id = str(user.id)
 
     # Главное меню
     if text == "🛒 Купить":
-        await update.message.reply_text("🛒 Выбери категорию товара:", reply_markup=categories_menu())
+        await update.message.reply_text(
+            "📂 Выберите категорию:",
+            reply_markup=categories_menu()
+        )
         return
 
     elif text == "💰 Прайс":
-        await update.message.reply_text(get_price_text(), reply_markup=main_menu())
+        await update.message.reply_text(PRICE_TEXT, reply_markup=main_menu())
         return
 
     elif text == "🎁 Акции":
-        await update.message.reply_text(get_promo_text(), reply_markup=main_menu())
+        await update.message.reply_text(ACTIONS_TEXT, reply_markup=main_menu())
         return
 
     elif text == "📦 Мои заказы":
-        orders = user_orders.get(user_id, [])
-        if not orders:
-            await update.message.reply_text("📦 У тебя пока нет заказов.", reply_markup=main_menu())
-        else:
-            msg = "📦 ТВОИ ЗАКАЗЫ:\n\n"
-            for i, order in enumerate(orders, 1):
-                msg += f"{i}. {order}\n"
-            await update.message.reply_text(msg, reply_markup=main_menu())
+        await update.message.reply_text(
+            "📦 Ваши заказы пока не сохраняются в списке.\n\nНо после оплаты чек и заказ сразу приходят админу.",
+            reply_markup=main_menu()
+        )
         return
 
     elif text == "⭐ Отзывы":
-        await update.message.reply_text(get_reviews_text(), reply_markup=main_menu())
+        await update.message.reply_text(REVIEWS_TEXT, reply_markup=main_menu())
         return
 
     elif text == "🛠 Поддержка":
-        await update.message.reply_text(get_support_text(), reply_markup=main_menu())
+        await update.message.reply_text(SUPPORT_TEXT, reply_markup=main_menu())
         return
 
     elif text == "📋 Что есть у нас":
-        await update.message.reply_text(get_catalog_text(), reply_markup=main_menu())
+        await update.message.reply_text(WHAT_WE_HAVE_TEXT, reply_markup=main_menu())
         return
 
     elif text == "⬅️ Назад":
-        user_state.pop(user_id, None)
-        await update.message.reply_text("⬅️ Возврат в меню", reply_markup=main_menu())
+        await update.message.reply_text("🏠 Главное меню", reply_markup=main_menu())
         return
 
-    # Если выбрал категорию
+    elif text == "⬅️ Назад в меню":
+        await update.message.reply_text("🏠 Главное меню", reply_markup=main_menu())
+        return
+
+    # Выбор категории
     if text in PRODUCTS:
-        user_state[user_id] = text
+        context.user_data["selected_category"] = text
         await update.message.reply_text(
-            f"📂 Категория: {text}\n\nВыбери товар кнопкой 👇",
+            f"📦 Категория: {text}\n\nВыберите товар:",
             reply_markup=products_menu(text)
         )
         return
 
-    # Если выбрал товар
-    if user_id in user_state:
-        category = user_state[user_id]
+    # Выбор товара
+    for category, items in PRODUCTS.items():
+        if text in items:
+            price = items[text]
+            context.user_data["selected_product"] = text
+            context.user_data["selected_price"] = price
 
-        if text in PRODUCTS[category]:
-            price = PRODUCTS[category][text]
+            msg = f"""
+🛒 Ваш товар:
+{text}
 
-            order_text = (
-                f"🛒 НОВЫЙ ЗАКАЗ\n\n"
-                f"👤 Клиент: @{user.username if user.username else 'нет username'}\n"
-                f"🆔 ID: {user.id}\n"
-                f"📦 Товар: {text}\n"
-                f"💰 Цена: {price:,} сум".replace(",", " ")
-            )
+💰 Цена:
+{price:,} сум
 
-            # отправка админу
-            await context.bot.send_message(chat_id=ADMIN_ID, text=order_text)
+{PAYMENT_TEXT}
+"""
+            await update.message.reply_text(msg, reply_markup=after_payment_menu())
+            return
 
-            # сохраняем заказ
-            if user_id not in user_orders:
-                user_orders[user_id] = []
+    # Кнопка "Я оплатил"
+    elif text == "✅ Я оплатил":
+        product = context.user_data.get("selected_product")
+        price = context.user_data.get("selected_price")
 
-            user_orders[user_id].append(f"{text} — {price:,} сум".replace(",", " "))
-            save_orders()
-
+        if not product:
             await update.message.reply_text(
-                f"✅ Заказ оформлен!\n\n"
-                f"📦 Товар: {text}\n"
-                f"💰 Цена: {price:,} сум\n\n"
-                f"📩 Для оплаты напиши: {SUPPORT_USERNAME}".replace(",", " "),
+                "❌ Сначала выберите товар.",
                 reply_markup=main_menu()
             )
-
-            user_state.pop(user_id, None)
-            return
-        else:
-            await update.message.reply_text(
-                "❌ Выбирай товар только кнопками ниже 👇",
-                reply_markup=products_menu(category)
-            )
             return
 
+        context.user_data["waiting_for_receipt"] = True
+
+        await update.message.reply_text(
+            f"""
+📌 Вы выбрали:
+🛒 {product}
+💰 {price:,} сум
+
+Теперь отправьте сюда:
+📸 СКРИНШОТ ЧЕКА
+
+После этого заказ автоматически уйдёт админу.
+""",
+            reply_markup=after_payment_menu()
+        )
+        return
+
+    # Если не понял
     await update.message.reply_text(
-        "❌ Нажми нужную кнопку ниже 👇",
+        "❌ Я не понял команду. Используйте кнопки ниже 👇",
         reply_markup=main_menu()
     )
 
+# =========================
+# ОБРАБОТКА ФОТО (ЧЕК)
+# =========================
+async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not context.user_data.get("waiting_for_receipt"):
+        await update.message.reply_text(
+            "📸 Если это чек, сначала нажмите кнопку «✅ Я оплатил».",
+            reply_markup=main_menu()
+        )
+        return
 
-# -------------------------
+    user = update.effective_user
+    product = context.user_data.get("selected_product", "Не указано")
+    price = context.user_data.get("selected_price", 0)
+
+    caption_to_admin = f"""
+🚨 НОВЫЙ ЗАКАЗ
+
+👤 Имя: {user.first_name or "Без имени"}
+🆔 ID: {user.id}
+📛 Username: @{user.username if user.username else "нет"}
+
+🛒 Товар: {product}
+💰 Сумма: {price:,} сум
+
+📸 Ниже чек от клиента.
+"""
+
+    # Пересылаем фото админу
+    try:
+        photo = update.message.photo[-1].file_id
+        await context.bot.send_photo(
+            chat_id=ADMIN_ID,
+            photo=photo,
+            caption=caption_to_admin
+        )
+    except Exception as e:
+        print("Ошибка отправки админу:", e)
+
+    # Сообщение клиенту
+    await update.message.reply_text(
+        f"""
+✅ Чек получен!
+
+Ваш заказ отправлен админу.
+
+🛒 Товар: {product}
+💰 Сумма: {price:,} сум
+
+📩 Ожидайте подтверждения.
+Если нужно ускорить — напишите {SUPPORT_USERNAME}
+""",
+        reply_markup=main_menu()
+    )
+
+    # Сброс
+    context.user_data["waiting_for_receipt"] = False
+    context.user_data["selected_product"] = None
+    context.user_data["selected_price"] = None
+
+# =========================
+# ОБРАБОТКА ДОКУМЕНТОВ (если чек как файл)
+# =========================
+async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not context.user_data.get("waiting_for_receipt"):
+        await update.message.reply_text(
+            "📎 Если это чек, сначала нажмите кнопку «✅ Я оплатил».",
+            reply_markup=main_menu()
+        )
+        return
+
+    user = update.effective_user
+    product = context.user_data.get("selected_product", "Не указано")
+    price = context.user_data.get("selected_price", 0)
+
+    caption_to_admin = f"""
+🚨 НОВЫЙ ЗАКАЗ
+
+👤 Имя: {user.first_name or "Без имени"}
+🆔 ID: {user.id}
+📛 Username: @{user.username if user.username else "нет"}
+
+🛒 Товар: {product}
+💰 Сумма: {price:,} сум
+
+📎 Клиент отправил чек файлом.
+"""
+
+    try:
+        document = update.message.document.file_id
+        await context.bot.send_document(
+            chat_id=ADMIN_ID,
+            document=document,
+            caption=caption_to_admin
+        )
+    except Exception as e:
+        print("Ошибка отправки файла админу:", e)
+
+    await update.message.reply_text(
+        f"""
+✅ Чек получен!
+
+Ваш заказ отправлен админу.
+
+🛒 Товар: {product}
+💰 Сумма: {price:,} сум
+
+📩 Ожидайте подтверждения.
+Если нужно ускорить — напишите {SUPPORT_USERNAME}
+""",
+        reply_markup=main_menu()
+    )
+
+    context.user_data["waiting_for_receipt"] = False
+    context.user_data["selected_product"] = None
+    context.user_data["selected_price"] = None
+
+# =========================
 # ЗАПУСК
-# -------------------------
+# =========================
 def main():
-    load_orders()
+    print("Бот запущен...")
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("menu", menu))
-    app.add_handler(CommandHandler("price", price))
-    app.add_handler(CommandHandler("buy", buy))
-    app.add_handler(CommandHandler("promo", promo))
-    app.add_handler(CommandHandler("support", support))
-    app.add_handler(CommandHandler("reviews", reviews))
-    app.add_handler(CommandHandler("myorders", myorders))
+    app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
+    app.add_handler(MessageHandler(filters.Document.ALL, handle_document))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    print("Бот запущен...")
     app.run_polling()
-
 
 if __name__ == "__main__":
     main()
