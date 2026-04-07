@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 # =========================
 # НАСТРОЙКИ
 # =========================
-TOKEN = "8764484233:AAH4ugVnM6N66fS4ywCpdQ9VUNhihYvIjiA"
+TOKEN = "8757081702:AAFUFe9aaJwirMDVhs0Abl90IOd5AtudzxE"
 SELLER_USERNAME = "GGDONAT1"
 
 # =========================
