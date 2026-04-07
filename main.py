@@ -1,49 +1,20 @@
-import os
-import logging
-from telegram import (
-    Update,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-)
-from telegram.ext import (
-    Application,
-    CommandHandler,
-    MessageHandler,
-    ContextTypes,
-    filters,
-)
+import asyncio
+from aiogram import Bot, Dispatcher, F
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import CommandStart
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-# ---------------- НАСТРОЙКИ ----------------
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID"))
+# =========================
+# НАСТРОЙКИ
+# =========================
+TOKEN = "8764484233:AAH4ugVnM6N66fS4ywCpdQ9VUNhihYvIjiA"
+SELLER_USERNAME = "GGDONAT1"
 
-PAYMENT_TEXT = """
-💳 Оплата:
-
-Номер карты Click:
-5614680504235934
-
-Номер карты Payme:
-5614680504235934
-
-👤 Получатель:
-ARTIKOVA ZUXRA
-
-📱 Номер телефона:
-93 597 27 47
-
-🏧 Можно оплатить через банкомат
-
-❌ На номер НЕ кидать
-🛑 За ошибочный перевод не ручаюсь
-
-После оплаты нажмите:
-✅ Я оплатил
-"""
-
-# ---------------- ТОВАРЫ ----------------
+# =========================
+# ТОВАРЫ
+# =========================
 PRODUCTS = {
-    "⭐ TELEGRAM STARS": {
+    "⭐ Telegram Stars": {
         "100 ⭐": "30 000 сум",
         "150 ⭐": "45 000 сум",
         "250 ⭐": "70 000 сум",
@@ -52,22 +23,26 @@ PRODUCTS = {
         "750 ⭐": "199 000 сум",
         "1000 ⭐": "285 000 сум",
     },
-    "💎 FC POINTS": {
+
+    "💎 FC Points": {
         "40 + 40": "13 000 сум",
         "100 + 100": "25 000 сум",
         "500 + 500": "96 000 сум",
         "1000 + 1000": "195 000 сум",
         "2000 + 2000": "380 000 сум",
     },
-    "🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ": {
+
+    "🌟 Звёздный абонемент": {
         "Абонемент": "195 000 сум",
         "+20 уровней": "370 000 сум",
     },
-    "🔥 BRAWL PASS": {
+
+    "🔥 Brawl Pass": {
         "Brawl Pass": "70 000 сум",
         "Brawl Pass Plus": "110 000 сум",
     },
-    "💎 ГЕМЫ": {
+
+    "💎 Гемы": {
         "30 гемов": "16 000 сум",
         "80 гемов": "40 000 сум",
         "170 гемов": "74 000 сум",
@@ -75,14 +50,22 @@ PRODUCTS = {
         "950 гемов": "355 000 сум",
         "2000 гемов": "685 000 сум",
     },
+
     "⭐ Telegram Premium": {
-    "На 1 месяц": "60 000 сум",
-    "На год (каждый месяц по 40 000 сум)": "480 000 сум"
-    }
+        "На 1 месяц": "60 000 сум",
+        "На 1 год (каждый месяц по 40 000 сум)": "40 000 сум",
     },
 
+    "📝 Отзывы": {
+        "Посмотреть отзывы": "Нажми и смотри",
+    }
+}
+
+# =========================
+# ОПИСАНИЯ КАТЕГОРИЙ
+# =========================
 CATEGORY_INFO = {
-    "⭐ TELEGRAM STARS": """⭐ TELEGRAM STARS — ВЫГОДНО И БЫСТРО ⭐
+    "⭐ Telegram Stars": """⭐ TELEGRAM STARS — ВЫГОДНО И БЫСТРО ⭐
 
 🚀 Пополняй звёзды без лишних переплат
 🔒 Надёжно | Проверено
@@ -96,9 +79,11 @@ CATEGORY_INFO = {
 • 750 ⭐ — 199 000 сум
 • 1000 ⭐ — 285 000 сум
 
-🔥 Успей купить по текущим ценам""",
+🔥 Успей купить по текущим ценам
 
-    "💎 FC POINTS": """💎 FC POINTS — ЗАЛЕТАЙ ПО ВЫГОДЕ 💎
+📩 Заказ: @GGDONAT1""",
+
+    "💎 FC Points": """💎 FC POINTS — ЗАЛЕТАЙ ПО ВЫГОДЕ 💎
 
 🚀 Хочешь топ состав и быстрый апгрейд?
 Не трать время — бери FC Points с бонусом x2!
@@ -115,9 +100,11 @@ CATEGORY_INFO = {
 • 1000 + 1000 — 195 000 сум
 • 2000 + 2000 — 380 000 сум
 
-⚡ Успей купить по этим ценам — потом будет дороже""",
+⚡ Успей купить по этим ценам — потом будет дороже
 
-    "🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ": """🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ 🌟
+📩 Пиши прямо сейчас: @GGDONAT1""",
+
+    "🌟 Звёздный абонемент": """🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ 🌟
 
 🔥 Легендарный 120 KLOSE уже доступен!
 Прокачай состав и забери топ игрока прямо сейчас ⚽💥
@@ -132,15 +119,18 @@ CATEGORY_INFO = {
 ✔️ Быстрый прогресс
 ✔️ Максимум буста для аккаунта
 
-⚡ Быстро | Надежно | Безопасно""",
+📩 Заказ: @GGDONAT1
+⚡ Быстро | Надежно | Безопасно
 
-    "🔥 BRAWL PASS": """🔥 BRAWL PASS АКЦИЯ 🔥
+Не упусти шанс забрать имбу в свой состав 🔥""",
+
+    "🔥 Brawl Pass": """🔥 BRAWL PASS АКЦИЯ 🔥
 
 Прокачай свой аккаунт в Brawl Stars на максимум 🚀
 
 💰 Цены:
 🎟️ Brawl Pass — 70 000 сум
-🎟️ Brawl Pass Plus — 110 000 сум
+🎟️ Brawl Pass Plus — 110 000 сум 💎
 
 ✨ Что получаешь:
 ✔️ Эксклюзивные награды
@@ -148,9 +138,12 @@ CATEGORY_INFO = {
 ✔️ Больше ресурсов и ключей
 ✔️ Дополнительные бонусы в Plus
 
-⚡ Быстро | Надежно | Безопасно""",
+📩 Заказ: @GGDONAT1
+⚡ Быстро | Надежно | Безопасно
 
-    "💎 ГЕМЫ": """💎 ГЕМЫ В НАЛИЧИИ 💎
+Не упусти шанс забрать топ-награды 🔥""",
+
+    "💎 Гемы": """💎 ГЕМЫ В НАЛИЧИИ 💎
 
 🚀 Быстрое пополнение | Надежно | Без лишних заморочек
 
@@ -159,13 +152,16 @@ CATEGORY_INFO = {
 🔹 80 гемов — 40 000 сум
 🔹 170 гемов — 74 000 сум
 🔹 360 гемов — 145 000 сум
-🔹 950 гемов — 355 000 сум
-🔹 2000 гемов — 685 000 сум
+🔹 950 гемов — 355 000 сум 🔥
+🔹 2000 гемов — 685 000 сум 💎
 
 ✨ Почему мы?
 ✔️ Моментальная выдача
 ✔️ Выгодные цены
-✔️ Проверенный сервис""",
+✔️ Проверенный сервис
+
+📩 Заказ: @GGDONAT1
+⚡ Успей прокачать свой аккаунт уже сейчас!""",
 
     "⭐ Telegram Premium": """⭐ Telegram Premium ⭐
 
@@ -174,7 +170,7 @@ CATEGORY_INFO = {
 
 💰 Тарифы:
 📅 На 1 месяц — 60 000 сум
-📆 На год — 40 000 сум каждый месяц 
+📆 На 1 год — 40 000 сум / месяц 🔥
 
 ✨ Что получаешь:
 ✔️ Быстрая загрузка файлов
@@ -183,271 +179,165 @@ CATEGORY_INFO = {
 ✔️ Отключение рекламы
 ✔️ И многое другое!
 
-⚡ Быстро | Надежно | Доступно"""
+📩 Заказать: @GGDONAT1
+⚡ Быстро | Надежно | Доступно
+
+Не упусти шанс прокачать свой Telegram 💜""",
+
+    "📝 Отзывы": """📝 ОТЗЫВЫ НАШИХ ПОКУПАТЕЛЕЙ
+
+⭐ Тут ты можешь посмотреть отзывы перед покупкой.
+
+🔥 Почему нам доверяют:
+✔️ Быстрая выдача
+✔️ Честные цены
+✔️ Постоянные клиенты
+✔️ Надёжность
+
+📩 Если тоже хочешь заказать:
+@GGDONAT1
+
+👇 Нажми кнопку ниже, чтобы посмотреть отзывы."""
 }
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
+# =========================
+# ССЫЛКА НА ОТЗЫВЫ
+# =========================
+REVIEWS_LINK = "https://t.me/uzdinat2"
 
-# ---------------- КНОПКИ ----------------
+
+# =========================
+# КНОПКИ
+# =========================
 def main_menu():
-    return ReplyKeyboardMarkup(
-        [
-            [KeyboardButton("🛒 Купить"), KeyboardButton("💰 Прайс")],
-            [KeyboardButton("🎁 Акции"), KeyboardButton("📦 Мои заказы")],
-            [KeyboardButton("⭐ Отзывы"), KeyboardButton("🛠 Поддержка")],
-            [KeyboardButton("📋 Что есть у нас")],
-        ],
-        resize_keyboard=True
-    )
+    kb = InlineKeyboardBuilder()
+    kb.button(text="⭐ Telegram Stars", callback_data="cat:⭐ Telegram Stars")
+    kb.button(text="💎 FC Points", callback_data="cat:💎 FC Points")
+    kb.button(text="🌟 Звёздный абонемент", callback_data="cat:🌟 Звёздный абонемент")
+    kb.button(text="🔥 Brawl Pass", callback_data="cat:🔥 Brawl Pass")
+    kb.button(text="💎 Гемы", callback_data="cat:💎 Гемы")
+    kb.button(text="⭐ Telegram Premium", callback_data="cat:⭐ Telegram Premium")
+    kb.button(text="📝 Отзывы", callback_data="cat:📝 Отзывы")
+    kb.adjust(1)
+    return kb.as_markup()
 
-def category_menu():
-    return ReplyKeyboardMarkup(
-        [
-            [KeyboardButton("⭐ TELEGRAM STARS")],
-            [KeyboardButton("💎 FC POINTS")],
-            [KeyboardButton("🌟 ЗВЁЗДНЫЙ АБОНЕМЕНТ")],
-            [KeyboardButton("🔥 BRAWL PASS")],
-            [KeyboardButton("💎 ГЕМЫ")],
-            [KeyboardButton("⭐ Telegram Premium")],
-            [KeyboardButton("⬅️ Назад")],
-        ],
-        resize_keyboard=True
-    )
 
-def products_menu(category):
-    buttons = []
-    for item in PRODUCTS[category]:
-        buttons.append([KeyboardButton(item)])
-    buttons.append([KeyboardButton("⬅️ Назад")])
-    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+def category_menu(category_name: str):
+    kb = InlineKeyboardBuilder()
 
-def payment_menu():
-    return ReplyKeyboardMarkup(
-        [
-            [KeyboardButton("✅ Я оплатил")],
-            [KeyboardButton("⬅️ Назад")],
-        ],
-        resize_keyboard=True
-    )
+    if category_name == "📝 Отзывы":
+        kb.button(text="📝 Смотреть отзывы", url=REVIEWS_LINK)
+        kb.button(text="📩 Связаться с продавцом", url=f"https://t.me/{SELLER_USERNAME}")
+        kb.button(text="⬅️ Назад", callback_data="back_main")
+        kb.adjust(1)
+        return kb.as_markup()
 
-# ---------------- СТАРТ ----------------
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    text = f"""
-👋 Привет, {user.first_name}!
-
-Добро пожаловать в магазин 🔥
-
-Выберите нужный раздел ниже 👇
-"""
-    await update.message.reply_text(text, reply_markup=main_menu())
-
-# ---------------- ТЕКСТ ----------------
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-    user = update.effective_user
-
-    if text == "/start":
-        await start(update, context)
-        return
-
-    if text == "🛒 Купить":
-        await update.message.reply_text(
-            "Выберите категорию товара 👇",
-            reply_markup=category_menu()
+    items = PRODUCTS.get(category_name, {})
+    for item_name, price in items.items():
+        kb.button(
+            text=f"{item_name} — {price}",
+            callback_data=f"buy:{category_name}:{item_name}"
         )
-        return
 
-    if text == "💰 Прайс":
-        msg = "💰 НАШ ПРАЙС:\n\n"
-        for category, items in PRODUCTS.items():
-            msg += f"{category}\n"
-            for name, price in items.items():
-                msg += f"• {name} — {price}\n"
-            msg += "\n"
-        await update.message.reply_text(msg, reply_markup=main_menu())
-        return
+    kb.button(text="📩 Связаться с продавцом", url=f"https://t.me/{SELLER_USERNAME}")
+    kb.button(text="⬅️ Назад", callback_data="back_main")
+    kb.adjust(1)
+    return kb.as_markup()
 
-    if text == "🎁 Акции":
-        await update.message.reply_text(
-            "🎁 Актуальные акции уже указаны в категориях товаров.",
-            reply_markup=main_menu()
-        )
-        return
 
-    if text == "📦 Мои заказы":
-        await update.message.reply_text(
-            "📦 Ваши заказы пока не сохраняются в истории.\n\nПосле оплаты админ получает заявку.",
-            reply_markup=main_menu()
-        )
-        return
+def back_to_category(category_name: str):
+    kb = InlineKeyboardBuilder()
+    kb.button(text="⬅️ Назад", callback_data=f"cat:{category_name}")
+    kb.button(text="🏠 Главное меню", callback_data="back_main")
+    kb.adjust(1)
+    return kb.as_markup()
 
-    if text == "⭐ Отзывы":
-        await update.message.reply_text(
-            "⭐ Отзывы можно добавить позже отдельным разделом.",
-            reply_markup=main_menu()
-        )
-        return
 
-    if text == "🛠 Поддержка":
-        await update.message.reply_text(
-            "🛠 Поддержка: @GGDONAT1",
-            reply_markup=main_menu()
-        )
-        return
+# =========================
+# БОТ
+# =========================
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
 
-    if text == "📋 Что есть у нас":
-        msg = "📋 У НАС ЕСТЬ:\n\n"
-        for category, items in PRODUCTS.items():
-            msg += f"{category}\n"
-            for name in items:
-                msg += f"• {name}\n"
-            msg += "\n"
-        await update.message.reply_text(msg, reply_markup=main_menu())
-        return
 
-    if text == "⬅️ Назад":
-        context.user_data.clear()
-        await update.message.reply_text(
-            "Вы вернулись в главное меню 👇",
-            reply_markup=main_menu()
-        )
-        return
+@dp.message(CommandStart())
+async def start_handler(message: Message):
+    text = """🔥 Добро пожаловать в магазин доната 🔥
 
-    # Выбор категории
-    if text in PRODUCTS:
-        context.user_data["category"] = text
-        await update.message.reply_text(
-            CATEGORY_INFO.get(text, "Выберите товар 👇"),
-            reply_markup=products_menu(text)
-        )
-        return
+Здесь ты можешь быстро и удобно купить:
+⭐ Telegram Stars
+💎 FC Points
+🌟 Звёздный абонемент
+🔥 Brawl Pass
+💎 Гемы
+⭐ Telegram Premium
 
-    # Выбор товара
-    for category, items in PRODUCTS.items():
-        if text in items:
-            price = items[text]
-            context.user_data["product"] = text
-            context.user_data["price"] = price
-            context.user_data["category"] = category
+🛒 Выбирай нужный товар ниже 👇"""
+    await message.answer(text, reply_markup=main_menu())
 
-            msg = f"""
-🛒 Вы выбрали:
-{text}
 
-📂 Категория:
-{category}
+@dp.callback_query(F.data.startswith("cat:"))
+async def category_handler(callback: CallbackQuery):
+    category_name = callback.data.split("cat:")[1]
+    text = CATEGORY_INFO.get(category_name, "Категория не найдена.")
+    await callback.message.edit_text(text, reply_markup=category_menu(category_name))
+    await callback.answer()
 
-💰 Цена:
-{price}
 
-{PAYMENT_TEXT}
-"""
-            await update.message.reply_text(msg, reply_markup=payment_menu())
-            return
+@dp.callback_query(F.data == "back_main")
+async def back_main_handler(callback: CallbackQuery):
+    text = """🔥 Добро пожаловать в магазин доната 🔥
 
-    # Кнопка оплаты
-    if text == "✅ Я оплатил":
-        product = context.user_data.get("product")
-        price = context.user_data.get("price")
-        category = context.user_data.get("category")
+Здесь ты можешь быстро и удобно купить:
+⭐ Telegram Stars
+💎 FC Points
+🌟 Звёздный абонемент
+🔥 Brawl Pass
+💎 Гемы
+⭐ Telegram Premium
 
-        if not product:
-            await update.message.reply_text(
-                "❌ Сначала выберите товар через кнопку «🛒 Купить».",
-                reply_markup=main_menu()
-            )
-            return
+🛒 Выбирай нужный товар ниже 👇"""
+    await callback.message.edit_text(text, reply_markup=main_menu())
+    await callback.answer()
 
-        context.user_data["waiting_for_screenshot"] = True
 
-        await update.message.reply_text(
-            f"""📸 Теперь отправьте СКРИНШОТ оплаты.
+@dp.callback_query(F.data.startswith("buy:"))
+async def buy_handler(callback: CallbackQuery):
+    _, category_name, item_name = callback.data.split(":", 2)
+    price = PRODUCTS[category_name][item_name]
 
-📂 Категория: {category}
-🛒 Товар: {product}
-💰 Сумма: {price}
+    text = f"""✅ Вы выбрали:
 
-После отправки скрина заявка сразу уйдёт админу.""",
-            reply_markup=ReplyKeyboardMarkup(
-                [[KeyboardButton("⬅️ Назад")]],
-                resize_keyboard=True
-            )
-        )
-        return
+📦 Товар: {item_name}
+💰 Цена: {price}
+📂 Категория: {category_name}
 
-    # Если непонятный текст
-    await update.message.reply_text(
-        "❌ Я не понял команду. Используйте кнопки ниже 👇",
-        reply_markup=main_menu()
-    )
+📩 Для заказа напишите продавцу:
+@{SELLER_USERNAME}
 
-# ---------------- ФОТО ----------------
-async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-
-    if not context.user_data.get("waiting_for_screenshot"):
-        await update.message.reply_text(
-            "📸 Сначала выберите товар и нажмите «✅ Я оплатил».",
-            reply_markup=main_menu()
-        )
-        return
-
-    product = context.user_data.get("product", "Не указан")
-    price = context.user_data.get("price", "Не указана")
-    category = context.user_data.get("category", "Не указана")
-
-    caption = f"""
-🆕 НОВАЯ ЗАЯВКА НА ОПЛАТУ
-
-👤 Клиент: {user.first_name}
-🆔 ID: {user.id}
-📎 Username: @{user.username if user.username else 'нет'}
-
-📂 Категория: {category}
-🛒 Товар: {product}
-💰 Сумма: {price}
+⚡ После оплаты отправьте:
+• Скрин оплаты
+• Что именно хотите купить
+• Ваш Telegram / данные для заказа
 """
 
-    photo = update.message.photo[-1].file_id
+    kb = InlineKeyboardBuilder()
+    kb.button(text="📩 Написать продавцу", url=f"https://t.me/{SELLER_USERNAME}")
+    kb.button(text="⬅️ Назад", callback_data=f"cat:{category_name}")
+    kb.button(text="🏠 Главное меню", callback_data="back_main")
+    kb.adjust(1)
 
-    await context.bot.send_photo(
-        chat_id=ADMIN_ID,
-        photo=photo,
-        caption=caption
-    )
+    await callback.message.edit_text(text, reply_markup=kb.as_markup())
+    await callback.answer()
 
-    await update.message.reply_text(
-        "✅ Скрин получен!\n\nАдмин проверит оплату и свяжется с вами.",
-        reply_markup=main_menu()
-    )
 
-    context.user_data["waiting_for_screenshot"] = False
-
-# ---------------- ОШИБКИ ----------------
-async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
-    print(f"Ошибка: {context.error}")
-
-# ---------------- ЗАПУСК ----------------
-def main():
-    if not BOT_TOKEN:
-        raise ValueError("BOT_TOKEN не найден!")
-    if not ADMIN_ID:
-        raise ValueError("ADMIN_ID не найден!")
-
-    app = Application.builder().token(BOT_TOKEN).build()
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    app.add_error_handler(error_handler)
-
+# =========================
+# ЗАПУСК
+# =========================
+async def main():
     print("Бот запущен...")
-    app.run_polling()
+    await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
